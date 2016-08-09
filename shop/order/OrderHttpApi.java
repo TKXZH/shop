@@ -31,7 +31,14 @@ public class OrderHttpApi {
             map.put("stat","invalidID");
             SendJsonResponse.parseMap2Json(map,resp);
             return;
-        }	
+        }
+        /*检测用户是否属于这个组*/
+        if(! Init.alreadyBelongsToThisTeam(userID, tid)) {
+        	Map<String,String> map = new HashMap<String,String>();
+            map.put("stat","sorry,you have been deleted from the team");
+            SendJsonResponse.parseMap2Json(map,resp);
+            return;
+        }
         /*检验商品ID是否存在*/
         if(!Init.authProduct(productID)) {
         	Map<String,String> map = new HashMap<String,String>();
@@ -94,11 +101,11 @@ public class OrderHttpApi {
 			long time2 = Long.parseLong(o2.get("orderTime"));
 			
 			if(time1 < time2) {
-				return -1;
+				return 1;
 			}	else if (time1 == time2) {
 				return 0;
 			}	else {
-				return 1;
+				return -1;
 			}
 		}
     	
